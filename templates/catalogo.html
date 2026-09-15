@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Catálogo - Doçuras Amanda</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<!-- CABEÇALHO -->
+<header class="topo">
+
+    <a class="marca" href="{{ url_for('inicio') }}">
+
+        <img src="{{ url_for('static', filename='imagens/logo.png') }}"
+             alt="Logo Doçuras Amanda">
+
+        <span>Doçuras Amanda</span>
+
+    </a>
+
+    <nav>
+
+        <a href="{{ url_for('inicio') }}">
+            Início
+        </a>
+
+        <a class="ativo" href="{{ url_for('catalogo') }}">
+            Catálogo
+        </a>
+
+        <a href="{{ url_for('login') }}">
+            Administrativo
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- CATÁLOGO -->
+<main class="catalogo-container">
+
+    <div class="titulo-pagina">
+
+        <p class="titulo-menor">
+            Nossas delícias
+        </p>
+
+        <h1>
+            Catálogo
+        </h1>
+
+        <p>
+            Escolha uma categoria e encontre a opção perfeita
+            para deixar seu momento ainda mais doce.
+        </p>
+
+    </div>
+
+
+    <!-- FILTROS -->
+    <div class="filtros">
+
+        <a href="{{ url_for('catalogo', categoria='Bolos de Festa') }}"
+           class="{% if categoria_ativa == 'Bolos de Festa' %}ativo{% endif %}">
+            Bolos de Festa
+        </a>
+
+        <a href="{{ url_for('catalogo', categoria='Docinhos') }}"
+           class="{% if categoria_ativa == 'Docinhos' %}ativo{% endif %}">
+            Docinhos
+        </a>
+
+        <a href="{{ url_for('catalogo', categoria='Bolos de Pote') }}"
+           class="{% if categoria_ativa == 'Bolos de Pote' %}ativo{% endif %}">
+            Bolos de Pote
+        </a>
+
+        <a href="{{ url_for('catalogo', categoria='Bolos Caseiros') }}"
+           class="{% if categoria_ativa == 'Bolos Caseiros' %}ativo{% endif %}">
+            Bolos Caseiros
+        </a>
+
+    </div>
+
+
+    <!-- PRODUTOS -->
+    {% if produtos %}
+
+        <section class="produtos">
+
+            {% for produto in produtos %}
+
+                <article class="card">
+
+                    {% if produto.imagem %}
+
+                        <img
+                            src="{{ url_for('static', filename='imagens/' + produto.imagem) }}"
+                            alt="{{ produto.nome }}">
+
+                    {% else %}
+
+                        <div class="card-sem-imagem">
+                            🍰
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="card-conteudo">
+
+                        <span class="categoria">
+                            {{ produto.categoria }}
+                        </span>
+
+                        <h2>
+                            {{ produto.nome }}
+                        </h2>
+
+
+                        {% if produto.descricao %}
+
+                            <p>
+                                {{ produto.descricao }}
+                            </p>
+
+                        {% endif %}
+
+
+                        {% if produto.preco and produto.preco > 0 %}
+
+                            <div class="preco">
+                                R$ {{ '%.2f'|format(produto.preco) }}
+                            </div>
+
+                        {% else %}
+
+                            <div class="preco">
+                                Consulte o valor
+                            </div>
+
+                        {% endif %}
+
+
+                        <a
+                            class="botao-whatsapp"
+                            href="https://wa.me/5511999999999?text={{ ('Olá! Tenho interesse em ' + produto.nome)|urlencode }}"
+                            target="_blank">
+
+                            Pedir pelo WhatsApp
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </section>
+
+
+    {% else %}
+
+        <div class="estado-vazio catalogo-vazio">
+
+            <span>🧁</span>
+
+            <p>
+                Nenhum produto encontrado nesta categoria.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</main>
+
+
+<footer>
+
+    <p>
+        © 2026 Doçuras Amanda • Confeitaria Artesanal
+    </p>
+
+</footer>
+
+</body>
+
+</html>

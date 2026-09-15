@@ -1,0 +1,15 @@
+CREATE DATABASE IF NOT EXISTS docuras_amanda
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE docuras_amanda;
+
+CREATE TABLE IF NOT EXISTS produtos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(120) NOT NULL,
+    categoria VARCHAR(60) NOT NULL,
+    descricao VARCHAR(500),
+    preco DECIMAL(10,2) NULL,
+    imagem VARCHAR(255),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

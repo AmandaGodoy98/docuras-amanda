@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Administrativo - Doçuras Amanda</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<!-- CABEÇALHO -->
+<header class="topo">
+
+    <a class="marca" href="{{ url_for('inicio') }}">
+
+        <img
+            src="{{ url_for('static', filename='imagens/logo.png') }}"
+            alt="Logo Doçuras Amanda">
+
+        <span>Doçuras Amanda</span>
+
+    </a>
+
+    <nav>
+
+        <a href="{{ url_for('inicio') }}">
+            Início
+        </a>
+
+        <a href="{{ url_for('catalogo') }}">
+            Catálogo
+        </a>
+
+        <a class="ativo"
+           href="{{ url_for('admin') }}">
+            Administrativo
+        </a>
+
+        <a href="{{ url_for('logout') }}">
+            Sair
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main class="admin-container">
+
+    <!-- TÍTULO -->
+    <div class="titulo-pagina">
+
+        <p class="titulo-menor">
+            Área administrativa
+        </p>
+
+        <h1>
+            Gerenciar produtos
+        </h1>
+
+        <p>
+            Cadastre novos produtos e gerencie os itens exibidos no catálogo.
+        </p>
+
+    </div>
+
+
+    <!-- MENSAGENS -->
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+
+        {% if mensagens %}
+
+            <div class="mensagens">
+
+                {% for categoria, mensagem in mensagens %}
+
+                    <div class="alerta {{ categoria }}">
+                        {{ mensagem }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- CADASTRAR PRODUTO -->
+    <section class="admin-bloco">
+
+        <h2>
+            Cadastrar novo produto
+        </h2>
+
+        <form
+            action="{{ url_for('cadastrar') }}"
+            method="POST"
+            enctype="multipart/form-data"
+            class="form-produto">
+
+
+            <div class="campo">
+
+                <label for="nome">
+                    Nome do produto
+                </label>
+
+                <input
+                    type="text"
+                    id="nome"
+                    name="nome"
+                    placeholder="Ex.: Bolo de chocolate"
+                    required>
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="categoria">
+                    Categoria
+                </label>
+
+                <select
+                    id="categoria"
+                    name="categoria"
+                    required>
+
+                    <option value="">
+                        Selecione
+                    </option>
+
+                    <option value="Bolos de Festa">
+                        Bolos de Festa
+                    </option>
+
+                    <option value="Docinhos">
+                        Docinhos
+                    </option>
+
+                    <option value="Bolos de Pote">
+                        Bolos de Pote
+                    </option>
+
+                    <option value="Bolos Caseiros">
+                        Bolos Caseiros
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="descricao">
+                    Descrição
+                </label>
+
+                <textarea
+                    id="descricao"
+                    name="descricao"
+                    rows="4"
+                    placeholder="Descrição do produto"></textarea>
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="preco">
+                    Preço
+                </label>
+
+                <input
+                    type="text"
+                    id="preco"
+                    name="preco"
+                    placeholder="Ex.: 35,00">
+
+                <small>
+                    Pode deixar vazio para aparecer “Consulte o valor”.
+                </small>
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="imagem">
+                    Imagem
+                </label>
+
+                <input
+                    type="file"
+                    id="imagem"
+                    name="imagem"
+                    accept=".png,.jpg,.jpeg,.webp">
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="botao-principal">
+
+                Cadastrar produto
+
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- PRODUTOS CADASTRADOS -->
+    <section class="admin-bloco">
+
+        <h2>
+            Produtos cadastrados
+        </h2>
+
+
+        <!-- FILTROS -->
+        <div class="filtros-admin">
+
+            <button
+                type="button"
+                class="filtro ativo"
+                data-categoria="Todos">
+                Todos
+            </button>
+
+            <button
+                type="button"
+                class="filtro"
+                data-categoria="Bolos de Festa">
+                Bolos de Festa
+            </button>
+
+            <button
+                type="button"
+                class="filtro"
+                data-categoria="Docinhos">
+                Docinhos
+            </button>
+
+            <button
+                type="button"
+                class="filtro"
+                data-categoria="Bolos de Pote">
+                Bolos de Pote
+            </button>
+
+            <button
+                type="button"
+                class="filtro"
+                data-categoria="Bolos Caseiros">
+                Bolos Caseiros
+            </button>
+
+        </div>
+
+
+        {% if produtos %}
+
+            <div class="admin-produtos">
+
+                {% for produto in produtos %}
+
+                    <article
+                        class="admin-card"
+                        data-categoria="{{ produto.categoria }}">
+
+
+                        <!-- IMAGEM -->
+                        {% if produto.imagem %}
+
+                            <img
+                                src="{{ url_for('static', filename='imagens/' + produto.imagem) }}"
+                                alt="{{ produto.nome }}">
+
+                        {% else %}
+
+                            <div class="card-sem-imagem">
+                                🍰
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- CONTEÚDO -->
+                        <div class="admin-card-conteudo">
+
+                            <span class="categoria">
+                                {{ produto.categoria }}
+                            </span>
+
+
+                            <h3>
+                                {{ produto.nome }}
+                            </h3>
+
+
+                            {% if produto.descricao %}
+
+                                <p>
+                                    {{ produto.descricao }}
+                                </p>
+
+                            {% endif %}
+
+
+                            {% if produto.preco and produto.preco > 0 %}
+
+                                <strong>
+                                    R$ {{ '%.2f'|format(produto.preco) }}
+                                </strong>
+
+                            {% else %}
+
+                                <strong>
+                                    Consulte o valor
+                                </strong>
+
+                            {% endif %}
+
+
+                            <!-- EXCLUIR -->
+                            <form
+                                action="{{ url_for('excluir', produto_id=produto.id) }}"
+                                method="POST"
+                                onsubmit="return confirm('Deseja realmente excluir este produto?');">
+
+                                <button
+                                    type="submit"
+                                    class="botao-excluir">
+
+                                    Excluir
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+            <div class="estado-vazio">
+
+                <span>🧁</span>
+
+                <p>
+                    Nenhum produto cadastrado.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <p>
+        © 2026 Doçuras Amanda • Área Administrativa
+    </p>
+
+</footer>
+
+
+<!-- FILTRO DOS PRODUTOS -->
+<script>
+
+    const filtros = document.querySelectorAll(".filtro");
+    const cards = document.querySelectorAll(".admin-card");
+
+    filtros.forEach(botao => {
+
+        botao.addEventListener("click", () => {
+
+            filtros.forEach(b => {
+                b.classList.remove("ativo");
+            });
+
+            botao.classList.add("ativo");
+
+            const categoria = botao.dataset.categoria;
+
+            cards.forEach(card => {
+
+                if (
+                    categoria === "Todos" ||
+                    card.dataset.categoria === categoria
+                ) {
+                    card.style.display = "flex";
+                } else {
+                    card.style.display = "none";
+                }
+
+            });
+
+        });
+
+    });
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Login Administrativo - Doçuras Amanda
+    </title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+
+<header class="topo">
+
+    <a class="marca"
+       href="{{ url_for('inicio') }}">
+
+        <img src="{{ url_for('static', filename='imagens/logo.png') }}"
+             alt="Logo Doçuras Amanda">
+
+        <span>
+            Doçuras Amanda
+        </span>
+
+    </a>
+
+
+    <nav>
+
+        <a href="{{ url_for('inicio') }}">
+            Início
+        </a>
+
+        <a href="{{ url_for('catalogo') }}">
+            Catálogo
+        </a>
+
+        <a class="ativo"
+           href="{{ url_for('login') }}">
+            Administrativo
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main class="login-container">
+
+    <div class="login-card">
+
+
+        <img
+            src="{{ url_for('static', filename='imagens/logo.png') }}"
+            class="login-logo"
+            alt="Doçuras Amanda">
+
+
+        <span class="titulo-menor">
+            Área administrativa
+        </span>
+
+
+        <h1>
+            Bem-vindo
+        </h1>
+
+
+        <p class="login-texto">
+            Entre para gerenciar os produtos
+            da Doçuras Amanda.
+        </p>
+
+
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+
+            {% if mensagens %}
+
+                {% for categoria, mensagem in mensagens %}
+
+                    <div class="alerta {{ categoria }}">
+
+                        {{ mensagem }}
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <form method="POST">
+
+
+            <div class="campo">
+
+                <label for="usuario">
+                    Usuário
+                </label>
+
+                <input
+                    type="text"
+                    id="usuario"
+                    name="usuario"
+                    placeholder="Digite seu usuário"
+                    required>
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="senha">
+                    Senha
+                </label>
+
+                <input
+                    type="password"
+                    id="senha"
+                    name="senha"
+                    placeholder="Digite sua senha"
+                    required>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="botao-principal">
+
+                Entrar
+
+            </button>
+
+
+        </form>
+
+
+        <a class="voltar-site"
+           href="{{ url_for('inicio') }}">
+
+            ← Voltar para o site
+
+        </a>
+
+
+    </div>
+
+</main>
+
+
+</body>
+
+</html>

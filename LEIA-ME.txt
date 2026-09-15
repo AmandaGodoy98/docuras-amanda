@@ -1,0 +1,41 @@
+DOÇURAS AMANDA - COMO RODAR O PROJETO
+=====================================
+
+1. Confirme que o MySQL Server está instalado e iniciado.
+
+2. Abra o arquivo config.py e troque:
+   DB_PASSWORD = "COLOQUE_SUA_SENHA_AQUI"
+   pela senha que você escolheu durante a instalação do MySQL.
+
+3. No terminal, entre na pasta confeitaria e ative o ambiente virtual.
+   Windows PowerShell:
+   .\venv\Scripts\Activate.ps1
+
+4. Instale as dependências, se necessário:
+   pip install -r requirements.txt
+
+5. Execute:
+   python app.py
+
+6. O programa cria automaticamente o database docuras_amanda e a tabela produtos.
+
+7. Abra no navegador:
+   Página inicial: http://127.0.0.1:5000/
+   Catálogo:       http://127.0.0.1:5000/catalogo
+   Administração:  http://127.0.0.1:5000/admin
+
+OBSERVAÇÕES
+-----------
+- O cliente usa a página /catalogo e faz o pedido pelo WhatsApp.
+- A página /admin serve para cadastrar e excluir produtos.
+- As imagens enviadas no cadastro ficam em static/imagens.
+- O arquivo schema.sql contém a estrutura do banco caso o professor queira ver o SQL.
+- O banco antigo confeitaria.db (SQLite) não é mais utilizado pelo sistema.
+
+
+CATÁLOGO INICIAL
+----------------
+Ao iniciar o app, os produtos das imagens já existentes são cadastrados automaticamente no MySQL, sem duplicar registros.
+Categorias preenchidas: Bolos de Festa, Docinhos e Bolos de Pote.
+Todos os cards possuem botão de encomenda para o WhatsApp (11) 95886-3264.
+Produtos sem preço cadastrado aparecem como "Consulte o valor".

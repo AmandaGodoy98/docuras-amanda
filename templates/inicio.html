@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doçuras Amanda</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<header class="topo">
+
+    <a class="marca" href="{{ url_for('inicio') }}">
+        <img src="{{ url_for('static', filename='imagens/logo.png') }}"
+             alt="Logo Doçuras Amanda">
+
+        <span>Doçuras Amanda</span>
+    </a>
+
+    <nav>
+
+        <a class="ativo" href="{{ url_for('inicio') }}">
+            Início
+        </a>
+
+        <a href="{{ url_for('catalogo') }}">
+            Catálogo
+        </a>
+
+        <a href="{{ url_for('login') }}">
+            Administrativo
+        </a>
+
+    </nav>
+
+</header>
+
+
+<section class="hero">
+
+    <div class="hero-conteudo">
+
+        <span class="hero-tag">
+            Confeitaria artesanal
+        </span>
+
+        <h1>
+            Doce é tornar seus momentos
+            <span>ainda mais especiais</span>
+        </h1>
+
+        <p>
+            Bolos, docinhos e sobremesas feitos com amor,
+            qualidade e um toque especial para cada ocasião.
+        </p>
+
+        <a href="{{ url_for('catalogo') }}"
+           class="botao-principal">
+
+            Conheça nosso catálogo ♡
+
+        </a>
+
+    </div>
+
+
+    <div class="hero-logo">
+
+        <img src="{{ url_for('static', filename='imagens/logo.png') }}"
+             alt="Doçuras Amanda">
+
+    </div>
+
+</section>
+
+
+<section class="diferenciais">
+
+    <div class="diferencial">
+
+        <div class="icone">🧁</div>
+
+        <h3>Produtos artesanais</h3>
+
+        <p>
+            Feitos com ingredientes de qualidade.
+        </p>
+
+    </div>
+
+
+    <div class="diferencial">
+
+        <div class="icone">♡</div>
+
+        <h3>Para todas as ocasiões</h3>
+
+        <p>
+            Aniversários, reuniões, presentes e muito mais.
+        </p>
+
+    </div>
+
+
+    <div class="diferencial">
+
+        <div class="icone">🎁</div>
+
+        <h3>Mais que doces</h3>
+
+        <p>
+            Criamos momentos e lembranças especiais.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="sobre">
+
+    <span class="titulo-menor">
+        Sobre nós
+    </span>
+
+    <h2>
+        Feito com carinho, do início ao fim
+    </h2>
+
+    <p>
+        A Doçuras Amanda nasceu para deixar momentos especiais
+        ainda mais doces, com produtos preparados artesanalmente
+        e atenção aos detalhes.
+    </p>
+
+    <p>
+        Escolha seu produto no catálogo e faça seu pedido
+        diretamente pelo WhatsApp.
+    </p>
+
+</section>
+
+
+<section class="chamada">
+
+    <h2>
+        Já escolheu seu doce favorito?
+    </h2>
+
+    <p>
+        Confira nosso catálogo e encontre a opção perfeita
+        para o seu momento.
+    </p>
+
+    <a href="{{ url_for('catalogo') }}"
+       class="botao-secundario">
+
+        Acessar catálogo
+
+    </a>
+
+</section>
+
+
+<footer>
+
+    <p>
+        © 2026 Doçuras Amanda • Confeitaria Artesanal
+    </p>
+
+</footer>
+
+</body>
+
+</html>
