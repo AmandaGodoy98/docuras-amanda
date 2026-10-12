@@ -1,198 +1,1695 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Catálogo - Doçuras Amanda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* CARROSSEL */
+        .catalogo-carrossel {
+            width: 100%;
+            max-width: 650px;
+            margin: 30px auto 50px;
+        }
+
+        .carrossel-area {
+            position: relative;
+            width: 100%;
+        }
+
+        .carrossel-slides {
+            width: 100%;
+        }
+
+        .carrossel-slide {
+            display: none;
+            width: 100%;
+            animation: aparecerSlide 0.5s ease;
+        }
+
+        .carrossel-slide.ativo {
+            display: block;
+        }
+
+        .carrossel-slide .card {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .carrossel-slide .card > img {
+            display: block;
+            width: 100%;
+            height: 420px;
+            object-fit: contain;
+            background: #fff8f8;
+        }
+
+        .carrossel-slide .card-sem-imagem {
+            height: 420px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            background: #fff8f8;
+        }
+
+        .carrossel-slide .card-conteudo {
+            padding: 22px;
+            text-align: center;
+        }
+
+        .carrossel-slide .card-conteudo h2 {
+            margin: 10px 0;
+        }
+
+        .carrossel-slide .card-conteudo p {
+            margin-bottom: 14px;
+        }
+
+        .carrossel-slide .botao-whatsapp {
+            cursor: pointer;
+        }
+
+        .carrossel-seta {
+            position: absolute;
+            top: 205px;
+            transform: translateY(-50%);
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255,255,255,.94);
+            color: #8b5e5e;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 12px rgba(0,0,0,.15);
+        }
+
+        .carrossel-seta:hover {
+            background: #f8dfe5;
+        }
+
+        .carrossel-seta.anterior {
+            left: 12px;
+        }
+
+        .carrossel-seta.proximo {
+            right: 12px;
+        }
+
+        .carrossel-controles {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .carrossel-indicadores {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        .carrossel-indicador {
+            width: 11px;
+            height: 11px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: #dfc9cd;
+            cursor: pointer;
+        }
+
+        .carrossel-indicador.ativo {
+            background: #8b5e5e;
+            transform: scale(1.2);
+        }
+
+        .carrossel-contador {
+            color: #806969;
+            font-size: 13px;
+        }
+
+        @keyframes aparecerSlide {
+            from { opacity: .4; }
+            to { opacity: 1; }
+        }
+
+        /* MODAL DE PERSONALIZAÇÃO */
+        .modal-personalizacao[hidden] {
+            display: none !important;
+        }
+
+        .modal-personalizacao {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0,0,0,.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-conteudo {
+            position: relative;
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            box-shadow: 0 10px 35px rgba(0,0,0,.2);
+        }
+
+        .modal-conteudo h2 {
+            color: #8b5e5e;
+            margin-bottom: 10px;
+        }
+
+        .modal-conteudo p {
+            margin-bottom: 20px;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            border: none;
+            background: transparent;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        .campo-pedido {
+            margin-bottom: 16px;
+        }
+
+        .campo-pedido label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #694b4b;
+        }
+
+        .campo-pedido input,
+        .campo-pedido select,
+        .campo-pedido textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background: #fff;
+        }
+
+        .campo-pedido textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .titulo-grupo-sabores {
+            font-size: 14px;
+            font-weight: 700;
+            color: #8b5e5e;
+            margin: 16px 0 10px;
+        }
+
+        .grupo-sabores {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .grupo-sabores label {
+            display: flex;
+            gap: 7px;
+            align-items: flex-start;
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+        }
+
+        .grupo-sabores input {
+            width: auto;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .aviso-sabores,
+        .aviso-pedido {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 15px;
+        }
+
+        .modal-conteudo .botao-whatsapp {
+            display: block;
+            width: 100%;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            padding: 13px;
+            font-size: 15px;
+            border-radius: 10px;
+        }
+
+        /* NOVO: QUANTIDADE POR SABOR DOS BOLOS DE POTE */
+        .pote-linha {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 9px 0;
+            border-bottom: 1px solid #f1e7e7;
+        }
+
+        .pote-linha > span {
+            font-size: 14px;
+        }
+
+        .pote-acoes {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .pote-acoes button {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #dec7cb;
+            border-radius: 8px;
+            background: #fff7f9;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .pote-acoes button:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+
+        .pote-acoes output {
+            min-width: 18px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .pote-resumo {
+            margin: 14px 0;
+            font-weight: 600;
+            color: #694b4b;
+        }
+
+        .pote-resumo.incompleto {
+            color: #a34b4b;
+        }
+
+        @media (max-width: 600px) {
+            .catalogo-carrossel {
+                max-width: 100%;
+                margin-top: 20px;
+            }
+
+            .carrossel-slide .card > img,
+            .carrossel-slide .card-sem-imagem {
+                height: 300px;
+            }
+
+            .carrossel-seta {
+                top: 145px;
+                width: 36px;
+                height: 36px;
+                font-size: 24px;
+            }
+
+            .carrossel-seta.anterior {
+                left: 8px;
+            }
+
+            .carrossel-seta.proximo {
+                right: 8px;
+            }
+
+            .carrossel-slide .card-conteudo {
+                padding: 18px;
+            }
+
+            .grupo-sabores {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-conteudo {
+                padding: 22px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- CABEÇALHO -->
-<header class="topo">
-
-    <a class="marca" href="{{ url_for('inicio') }}">
-
-        <img src="{{ url_for('static', filename='imagens/logo.png') }}"
-             alt="Logo Doçuras Amanda">
-
-        <span>Doçuras Amanda</span>
-
-    </a>
-
-    <nav>
-
-        <a href="{{ url_for('inicio') }}">
-            Início
+    <!-- CABEÇALHO -->
+    <header class="topo">
+        <a class="marca" href="{{ url_for('inicio') }}">
+            <img
+                src="{{ url_for('static', filename='imagens/logo.png') }}"
+                alt="Logo Doçuras Amanda"
+            >
+            <span>Doçuras Amanda</span>
         </a>
 
-        <a class="ativo" href="{{ url_for('catalogo') }}">
-            Catálogo
-        </a>
+        <nav>
+            <a href="{{ url_for('inicio') }}">Início</a>
 
-        <a href="{{ url_for('login') }}">
-            Administrativo
-        </a>
+            <a
+                class="ativo"
+                href="{{ url_for('catalogo') }}"
+            >
+                Catálogo
+            </a>
 
-    </nav>
+            <a href="{{ url_for('login') }}">
+                Administrativo
+            </a>
+        </nav>
+    </header>
 
-</header>
+    <!-- CATÁLOGO -->
+    <main class="catalogo-container">
 
+        <div class="titulo-pagina">
+            <p class="titulo-menor">Nossas delícias</p>
 
-<!-- CATÁLOGO -->
-<main class="catalogo-container">
-
-    <div class="titulo-pagina">
-
-        <p class="titulo-menor">
-            Nossas delícias
-        </p>
-
-        <h1>
-            Catálogo
-        </h1>
-
-        <p>
-            Escolha uma categoria e encontre a opção perfeita
-            para deixar seu momento ainda mais doce.
-        </p>
-
-    </div>
-
-
-    <!-- FILTROS -->
-    <div class="filtros">
-
-        <a href="{{ url_for('catalogo', categoria='Bolos de Festa') }}"
-           class="{% if categoria_ativa == 'Bolos de Festa' %}ativo{% endif %}">
-            Bolos de Festa
-        </a>
-
-        <a href="{{ url_for('catalogo', categoria='Docinhos') }}"
-           class="{% if categoria_ativa == 'Docinhos' %}ativo{% endif %}">
-            Docinhos
-        </a>
-
-        <a href="{{ url_for('catalogo', categoria='Bolos de Pote') }}"
-           class="{% if categoria_ativa == 'Bolos de Pote' %}ativo{% endif %}">
-            Bolos de Pote
-        </a>
-
-        <a href="{{ url_for('catalogo', categoria='Bolos Caseiros') }}"
-           class="{% if categoria_ativa == 'Bolos Caseiros' %}ativo{% endif %}">
-            Bolos Caseiros
-        </a>
-
-    </div>
-
-
-    <!-- PRODUTOS -->
-    {% if produtos %}
-
-        <section class="produtos">
-
-            {% for produto in produtos %}
-
-                <article class="card">
-
-                    {% if produto.imagem %}
-
-                        <img
-                            src="{{ url_for('static', filename='imagens/' + produto.imagem) }}"
-                            alt="{{ produto.nome }}">
-
-                    {% else %}
-
-                        <div class="card-sem-imagem">
-                            🍰
-                        </div>
-
-                    {% endif %}
-
-
-                    <div class="card-conteudo">
-
-                        <span class="categoria">
-                            {{ produto.categoria }}
-                        </span>
-
-                        <h2>
-                            {{ produto.nome }}
-                        </h2>
-
-
-                        {% if produto.descricao %}
-
-                            <p>
-                                {{ produto.descricao }}
-                            </p>
-
-                        {% endif %}
-
-
-                        {% if produto.preco and produto.preco > 0 %}
-
-                            <div class="preco">
-                                R$ {{ '%.2f'|format(produto.preco) }}
-                            </div>
-
-                        {% else %}
-
-                            <div class="preco">
-                                Consulte o valor
-                            </div>
-
-                        {% endif %}
-
-
-                        <a
-                            class="botao-whatsapp"
-                            href="https://wa.me/5511958863264?text={{ ('Olá! Tenho interesse em ' + produto.nome)|urlencode }}"
-                            target="_blank">
-
-                            Pedir pelo WhatsApp
-
-                        </a>
-
-                    </div>
-
-                </article>
-
-            {% endfor %}
-
-        </section>
-
-
-    {% else %}
-
-        <div class="estado-vazio catalogo-vazio">
-
-            <span>🧁</span>
+            <h1>Catálogo</h1>
 
             <p>
-                Nenhum produto encontrado nesta categoria.
+                Escolha uma categoria e encontre a opção perfeita
+                para deixar seu momento ainda mais doce.
             </p>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filtros">
+
+            <a
+                href="{{ url_for('catalogo', categoria='Bolos de Festa') }}"
+                class="{% if categoria_ativa == 'Bolos de Festa' %}ativo{% endif %}"
+            >
+                Bolos Decorados
+            </a>
+
+            <a
+                href="{{ url_for('catalogo', categoria='Docinhos') }}"
+                class="{% if categoria_ativa == 'Docinhos' %}ativo{% endif %}"
+            >
+                Docinhos
+            </a>
+
+            <a
+                href="{{ url_for('catalogo', categoria='Bolos de Pote') }}"
+                class="{% if categoria_ativa == 'Bolos de Pote' %}ativo{% endif %}"
+            >
+                Bolos de Pote
+            </a>
+
+            <a
+                href="{{ url_for('catalogo', categoria='Bolos Caseiros') }}"
+                class="{% if categoria_ativa == 'Bolos Caseiros' %}ativo{% endif %}"
+            >
+                Bolos Caseiros
+            </a>
 
         </div>
 
-    {% endif %}
+        <!-- CARROSSEL -->
+        {% if produtos %}
 
-</main>
+        <section
+            class="catalogo-carrossel"
+            id="catalogo-carrossel"
+            aria-label="Produtos do catálogo"
+        >
 
+            <div class="carrossel-area">
 
-<footer>
+                <div class="carrossel-slides">
 
-    <p>
-        © 2026 Doçuras Amanda • Confeitaria Artesanal
-    </p>
+                    {% for produto in produtos %}
 
-</footer>
+                    <div
+                        class="carrossel-slide {% if loop.first %}ativo{% endif %}"
+                        aria-hidden="{% if loop.first %}false{% else %}true{% endif %}"
+                    >
+
+                        <article class="card">
+
+                            {% if produto.imagem %}
+
+                            <img
+                                src="{{ url_for('static', filename='imagens/' + produto.imagem) }}"
+                                alt="{{ produto.nome }}"
+                            >
+
+                            {% else %}
+
+                            <div class="card-sem-imagem">
+                                🍰
+                            </div>
+
+                            {% endif %}
+
+                            <div class="card-conteudo">
+
+                                <span class="categoria">
+                                    {% if produto.categoria == 'Bolos de Festa' %}
+                                        Bolos Decorados
+                                    {% else %}
+                                        {{ produto.categoria }}
+                                    {% endif %}
+                                </span>
+
+                                <h2>
+                                    {% if produto.categoria == 'Docinhos' %}
+                                        Docinhos
+                                    {% elif produto.categoria == 'Bolos de Festa' %}
+                                        Bolos Decorados
+                                    {% else %}
+                                        {{ produto.nome }}
+                                    {% endif %}
+                                </h2>
+
+                                {% if produto.descricao %}
+                                <p>{{ produto.descricao }}</p>
+                                {% endif %}
+
+                                {% if produto.preco and produto.preco > 0 %}
+
+                                <div class="preco">
+                                    R$ {{ '%.2f'|format(produto.preco) }}
+                                </div>
+
+                                {% else %}
+
+                                <div class="preco">
+                                    Consulte o valor
+                                </div>
+
+                                {% endif %}
+
+                                <button
+                                    type="button"
+                                    class="botao-whatsapp"
+                                    data-nome="{{ produto.nome }}"
+                                    data-categoria="{{ produto.categoria }}"
+                                    onclick="abrirPersonalizacao(this.dataset.nome, this.dataset.categoria)"
+                                >
+                                    Personalizar pedido
+                                </button>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <!-- SETAS -->
+                {% if produtos|length > 1 %}
+
+                <button
+                    type="button"
+                    class="carrossel-seta anterior"
+                    onclick="mudarSlide(-1)"
+                    aria-label="Produto anterior"
+                >
+                    &#10094;
+                </button>
+
+                <button
+                    type="button"
+                    class="carrossel-seta proximo"
+                    onclick="mudarSlide(1)"
+                    aria-label="Próximo produto"
+                >
+                    &#10095;
+                </button>
+
+                {% endif %}
+
+            </div>
+
+            <!-- INDICADORES -->
+            <div class="carrossel-controles">
+
+                {% if produtos|length > 1 %}
+
+                <div
+                    class="carrossel-indicadores"
+                    id="carrossel-indicadores"
+                >
+
+                    {% for produto in produtos %}
+
+                    <button
+                        type="button"
+                        class="carrossel-indicador {% if loop.first %}ativo{% endif %}"
+                        data-slide="{{ loop.index0 }}"
+                        onclick="irParaSlide(Number(this.dataset.slide))"
+                        aria-label="Ver produto {{ loop.index }}"
+                        aria-current="{% if loop.first %}true{% else %}false{% endif %}"
+                    ></button>
+
+                    {% endfor %}
+
+                </div>
+
+                {% endif %}
+
+                <div
+                    class="carrossel-contador"
+                    id="carrossel-contador"
+                >
+                    1 de {{ produtos|length }} produtos
+                </div>
+
+            </div>
+
+        </section>
+
+        {% else %}
+
+        <div class="estado-vazio catalogo-vazio">
+            <span>🧁</span>
+            <p>Nenhum produto encontrado nesta categoria.</p>
+        </div>
+
+        {% endif %}
+
+    </main>
+
+    <!-- MODAL -->
+    <div
+        id="modal-personalizacao"
+        class="modal-personalizacao"
+        hidden
+    >
+
+        <div class="modal-conteudo">
+
+            <button
+                type="button"
+                class="fechar-modal"
+                onclick="fecharPersonalizacao()"
+                aria-label="Fechar janela"
+            >
+                &times;
+            </button>
+
+            <h2>Personalize seu pedido 🧁</h2>
+
+            <p id="produto-selecionado"></p>
+
+            <form id="form-personalizacao">
+
+                <div id="campos-personalizacao"></div>
+
+                <p class="aviso-pedido">
+                    O valor será informado após a análise
+                    do seu pedido pelo WhatsApp.
+                </p>
+
+                <button
+                    type="submit"
+                    class="botao-whatsapp"
+                >
+                    Solicitar orçamento pelo WhatsApp
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2026 Doçuras Amanda • Confeitaria Artesanal</p>
+    </footer>
+
+    <script>
+
+        /* =====================================
+           CONFIGURAÇÕES
+        ===================================== */
+
+        const telefoneWhatsApp = "5511958863264";
+
+        let produtoAtual = "";
+        let categoriaAtual = "";
+
+        /* =====================================
+           CARROSSEL
+        ===================================== */
+
+        let slideAtual = 0;
+        let intervaloCarrossel = null;
+
+        const tempoTroca = 5000;
+
+        const slides = document.querySelectorAll(
+            ".carrossel-slide"
+        );
+
+        const indicadores = document.querySelectorAll(
+            ".carrossel-indicador"
+        );
+
+        function mostrarSlide(indice) {
+
+            if (slides.length === 0) {
+                return;
+            }
+
+            slideAtual =
+                (indice + slides.length) % slides.length;
+
+            slides.forEach((slide, posicao) => {
+
+                const ativo = posicao === slideAtual;
+
+                slide.classList.toggle("ativo", ativo);
+
+                slide.setAttribute(
+                    "aria-hidden",
+                    ativo ? "false" : "true"
+                );
+
+            });
+
+            indicadores.forEach((indicador, posicao) => {
+
+                const ativo = posicao === slideAtual;
+
+                indicador.classList.toggle("ativo", ativo);
+
+                indicador.setAttribute(
+                    "aria-current",
+                    ativo ? "true" : "false"
+                );
+
+            });
+
+            const contador = document.getElementById(
+                "carrossel-contador"
+            );
+
+            if (contador) {
+
+                contador.textContent =
+                    (slideAtual + 1) +
+                    " de " +
+                    slides.length +
+                    " produtos";
+            }
+        }
+
+        function pararCarrossel() {
+
+            if (intervaloCarrossel !== null) {
+
+                clearInterval(intervaloCarrossel);
+
+                intervaloCarrossel = null;
+            }
+        }
+
+        function iniciarCarrossel() {
+
+            pararCarrossel();
+
+            if (slides.length <= 1) {
+                return;
+            }
+
+            const modal = document.getElementById(
+                "modal-personalizacao"
+            );
+
+            if (!modal.hidden || document.hidden) {
+                return;
+            }
+
+            intervaloCarrossel = setInterval(() => {
+
+                mostrarSlide(slideAtual + 1);
+
+            }, tempoTroca);
+        }
+
+        function mudarSlide(direcao) {
+
+            mostrarSlide(slideAtual + direcao);
+
+            iniciarCarrossel();
+        }
+
+        function irParaSlide(indice) {
+
+            mostrarSlide(indice);
+
+            iniciarCarrossel();
+        }
+
+        mostrarSlide(0);
+        iniciarCarrossel();
+
+        document.addEventListener(
+            "visibilitychange",
+            function() {
+
+                if (document.hidden) {
+                    pararCarrossel();
+                } else {
+                    iniciarCarrossel();
+                }
+
+            }
+        );
+
+        /* =====================================
+           SABORES
+        ===================================== */
+
+        const saboresPote = [
+            "Abacaxi com coco",
+            "Brigadeiro",
+            "Brigadeiro com morango",
+            "Choconinho",
+            "Doce de leite com ameixa",
+            "Cenoura com chocolate",
+            "Maracujá",
+            "Limão",
+            "Ninho com Nutella",
+            "Ninho com morango",
+            "Prestígio",
+            "Sensação"
+        ];
+
+        const saboresDocinhosTradicionais = [
+            "Brigadeiro ao leite",
+            "Brigadeiro meio amargo",
+            "Brigadeiro branco",
+            "Beijinho",
+            "Limão",
+            "Maracujá",
+            "Ninho",
+            "Paçoca",
+            "Bicho de pé",
+            "Casadinho",
+            "Café",
+            "Doce de leite"
+        ];
+
+        const saboresDocinhosGourmets = [
+            "Caramelo salgado",
+            "Coco queimado",
+            "Churros",
+            "Confete",
+            "Frutas vermelhas",
+            "Ferrero Rocher",
+            "Cajuzinho",
+            "Ninho com Nutella",
+            "Romeu e Julieta",
+            "Oreo",
+            "Pistache",
+            "Surpresa de uva"
+        ];
+
+        /* =====================================
+           CRIAÇÃO DOS CAMPOS
+        ===================================== */
+
+        function criarCampo(
+            titulo,
+            nome,
+            tipo = "text",
+            obrigatorio = true
+        ) {
+
+            return `
+                <div class="campo-pedido">
+
+                    <label for="${nome}">
+                        ${titulo}
+                    </label>
+
+                    <input
+                        type="${tipo}"
+                        id="${nome}"
+                        name="${nome}"
+                        ${obrigatorio ? "required" : ""}
+                        ${tipo === "number" ? 'min="1" step="1"' : ""}
+                    >
+
+                </div>
+            `;
+        }
+
+        function criarSelecao(titulo, nome, opcoes) {
+
+            let html = `
+                <div class="campo-pedido">
+
+                    <label for="${nome}">
+                        ${titulo}
+                    </label>
+
+                    <select
+                        id="${nome}"
+                        name="${nome}"
+                        required
+                    >
+
+                        <option value="">
+                            Selecione uma opção
+                        </option>
+            `;
+
+            opcoes.forEach(opcao => {
+
+                html += `
+                    <option value="${opcao}">
+                        ${opcao}
+                    </option>
+                `;
+
+            });
+
+            html += `
+                    </select>
+                </div>
+            `;
+
+            return html;
+        }
+
+        function criarGrupoSabores(titulo, sabores) {
+
+            let html = `
+                <div class="titulo-grupo-sabores">
+                    ${titulo}
+                </div>
+
+                <div class="grupo-sabores">
+            `;
+
+            sabores.forEach(sabor => {
+
+                html += `
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="sabores_docinhos"
+                            value="${sabor}"
+                            onchange="limitarSabores(this)"
+                        >
+                        ${sabor}
+                    </label>
+                `;
+
+            });
+
+            html += `</div>`;
+
+            return html;
+        }
+
+        function criarSaboresDocinhos() {
+
+            let html = `
+                <div class="campo-pedido">
+
+                    <label id="aviso-sabores">
+                        Escolha até 4 sabores
+                    </label>
+
+                    <div class="aviso-sabores">
+                        Para 100 unidades, escolha até 4 sabores.
+                        A partir de 200 unidades, escolha até 6.
+                    </div>
+
+                </div>
+            `;
+
+            html += criarGrupoSabores(
+                "Sabores tradicionais",
+                saboresDocinhosTradicionais
+            );
+
+            html += criarGrupoSabores(
+                "Sabores gourmets",
+                saboresDocinhosGourmets
+            );
+
+            return html;
+        }
+
+        /* =====================================
+           DOCINHOS: LIMITE DE SABORES
+        ===================================== */
+
+        function obterLimiteSabores() {
+
+            const campoQuantidade = document.querySelector(
+                '#form-personalizacao input[name="quantidade"]'
+            );
+
+            if (!campoQuantidade) {
+                return 4;
+            }
+
+            const quantidade = Number(
+                campoQuantidade.value
+            );
+
+            return quantidade > 100 ? 6 : 4;
+        }
+
+        function limitarSabores(checkbox) {
+
+            const limite = obterLimiteSabores();
+
+            const selecionados = document.querySelectorAll(
+                'input[name="sabores_docinhos"]:checked'
+            );
+
+            if (selecionados.length > limite) {
+
+                checkbox.checked = false;
+
+                alert(
+                    "Para essa quantidade, você pode escolher até " +
+                    limite +
+                    " sabores."
+                );
+            }
+        }
+
+        function atualizarLimiteSabores() {
+
+            const limite = obterLimiteSabores();
+
+            const aviso = document.getElementById(
+                "aviso-sabores"
+            );
+
+            if (aviso) {
+
+                aviso.textContent =
+                    "Escolha até " +
+                    limite +
+                    " sabores";
+            }
+
+            const selecionados = document.querySelectorAll(
+                'input[name="sabores_docinhos"]:checked'
+            );
+
+            if (selecionados.length > limite) {
+
+                Array.from(selecionados)
+                    .slice(limite)
+                    .forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+            }
+        }
+
+        /* =====================================
+           NOVO: BOLOS DE POTE POR SABOR
+        ===================================== */
+
+        let quantidadesPote = {};
+
+        function montarSaboresPote() {
+
+            quantidadesPote = {};
+
+            const lista = document.getElementById(
+                "lista-sabores-pote"
+            );
+
+            lista.innerHTML = "";
+
+            saboresPote.forEach((sabor, indice) => {
+
+                quantidadesPote[indice] = 0;
+
+                const linha = document.createElement("div");
+                linha.className = "pote-linha";
+
+                const nome = document.createElement("span");
+                nome.textContent = sabor;
+
+                linha.appendChild(nome);
+
+                const acoes = document.createElement("div");
+                acoes.className = "pote-acoes";
+
+                // BOTÃO MENOS
+                const menos = document.createElement("button");
+
+                menos.type = "button";
+                menos.textContent = "−";
+
+                menos.setAttribute(
+                    "aria-label",
+                    "Diminuir " + sabor
+                );
+
+                menos.onclick = () => {
+                    alterarQuantidadePote(indice, -1);
+                };
+
+                // NÚMERO SELECIONADO
+                const numero = document.createElement("output");
+
+                numero.id = "pote-quantidade-" + indice;
+                numero.textContent = "0";
+
+                // BOTÃO MAIS
+                const mais = document.createElement("button");
+
+                mais.type = "button";
+                mais.textContent = "+";
+
+                mais.setAttribute(
+                    "aria-label",
+                    "Adicionar " + sabor
+                );
+
+                mais.onclick = () => {
+                    alterarQuantidadePote(indice, 1);
+                };
+
+                acoes.append(menos, numero, mais);
+
+                linha.appendChild(acoes);
+
+                lista.appendChild(linha);
+            });
+
+            atualizarQuantidadesPote();
+        }
+
+        function totalSaboresPote() {
+
+            return Object.values(quantidadesPote).reduce(
+                (soma, quantidade) => soma + quantidade,
+                0
+            );
+        }
+
+        function alterarQuantidadePote(indice, variacao) {
+
+            const desejado = Number(
+                document.getElementById("quantidade").value
+            );
+
+            const total = totalSaboresPote();
+
+            // NÃO DEIXAR ULTRAPASSAR O TOTAL
+            if (
+                variacao > 0 &&
+                (desejado < 1 || total >= desejado)
+            ) {
+                return;
+            }
+
+            // NÃO PERMITIR QUANTIDADE NEGATIVA
+            quantidadesPote[indice] = Math.max(
+                0,
+                quantidadesPote[indice] + variacao
+            );
+
+            atualizarQuantidadesPote();
+        }
+
+        function atualizarQuantidadesPote() {
+
+            const desejado = Number(
+                document.getElementById("quantidade").value
+            );
+
+            const total = totalSaboresPote();
+
+            const resumo = document.getElementById(
+                "resumo-sabores-pote"
+            );
+
+            if (!resumo) {
+                return;
+            }
+
+            saboresPote.forEach((sabor, indice) => {
+
+                const numero = document.getElementById(
+                    "pote-quantidade-" + indice
+                );
+
+                if (!numero) {
+                    return;
+                }
+
+                numero.textContent = quantidadesPote[indice];
+
+                const botoes = numero.parentElement.querySelectorAll(
+                    "button"
+                );
+
+                // DESATIVAR MENOS SE ESTIVER EM ZERO
+                botoes[0].disabled =
+                    quantidadesPote[indice] === 0;
+
+                // DESATIVAR MAIS QUANDO ATINGIR O TOTAL
+                botoes[1].disabled =
+                    desejado < 1 || total >= desejado;
+            });
+
+            resumo.textContent =
+                "Total selecionado: " +
+                total +
+                " de " +
+                (desejado > 0 ? desejado : 0);
+
+            resumo.classList.toggle(
+                "incompleto",
+                total !== desejado || desejado < 1
+            );
+        }
+
+        /* =====================================
+           ABRIR PERSONALIZAÇÃO
+        ===================================== */
+
+        function abrirPersonalizacao(nome, categoria) {
+
+            pararCarrossel();
+
+            if (categoria === "Docinhos") {
+
+                produtoAtual = "Docinhos";
+
+            } else if (categoria === "Bolos de Festa") {
+
+                produtoAtual = "Bolos Decorados";
+
+            } else {
+
+                produtoAtual = nome;
+            }
+
+            categoriaAtual = categoria;
+
+            const modal = document.getElementById(
+                "modal-personalizacao"
+            );
+
+            const campos = document.getElementById(
+                "campos-personalizacao"
+            );
+
+            document.getElementById(
+                "produto-selecionado"
+            ).textContent = produtoAtual;
+
+            let html = "";
+
+            /* BOLOS DE POTE */
+            if (categoria === "Bolos de Pote") {
+
+                html += `
+                    <div class="campo-pedido">
+
+                        <label for="quantidade">
+                            Quantidade total de bolos de pote
+                        </label>
+
+                        <input
+                            type="number"
+                            id="quantidade"
+                            name="quantidade"
+                            min="1"
+                            step="1"
+                            value="1"
+                            required
+                            oninput="atualizarQuantidadesPote()"
+                        >
+
+                    </div>
+
+                    <div class="campo-pedido">
+
+                        <label>
+                            Escolha a quantidade de cada sabor
+                        </label>
+
+                        <div id="lista-sabores-pote"></div>
+
+                        <div
+                            id="resumo-sabores-pote"
+                            class="pote-resumo"
+                            aria-live="polite"
+                        ></div>
+
+                    </div>
+                `;
+            }
+
+            /* DOCINHOS */
+            else if (categoria === "Docinhos") {
+
+                html += `
+                    <div class="campo-pedido">
+
+                        <label for="quantidade">
+                            Quantidade de docinhos
+                        </label>
+
+                        <input
+                            type="number"
+                            id="quantidade"
+                            name="quantidade"
+                            min="100"
+                            step="100"
+                            value="100"
+                            required
+                            oninput="atualizarLimiteSabores()"
+                        >
+
+                    </div>
+                `;
+
+                html += criarSaboresDocinhos();
+
+                html += criarCampo(
+                    "Qual a cor das forminhas?",
+                    "cor_forminhas",
+                    "text"
+                );
+            }
+
+            /* BOLOS DECORADOS */
+            else if (categoria === "Bolos de Festa") {
+
+                html += criarCampo(
+                    "Para quantas pessoas?",
+                    "pessoas",
+                    "number"
+                );
+
+                html += criarSelecao(
+                    "Sabor da massa",
+                    "massa",
+                    [
+                        "Chocolate",
+                        "Baunilha"
+                    ]
+                );
+
+                html += criarSelecao(
+                    "Formato do bolo",
+                    "formato",
+                    [
+                        "Redondo",
+                        "Retangular"
+                    ]
+                );
+
+                html += criarCampo(
+                    "Qual recheio você deseja?",
+                    "recheio",
+                    "text"
+                );
+
+                html += criarSelecao(
+                    "Deseja topo personalizado?",
+                    "topo",
+                    [
+                        "Sim",
+                        "Não"
+                    ]
+                );
+
+                html += criarCampo(
+                    "Tema da decoração",
+                    "tema",
+                    "text",
+                    false
+                );
+            }
+
+            /* BOLOS CASEIROS */
+            else if (categoria === "Bolos Caseiros") {
+
+                html += criarCampo(
+                    "Quantidade",
+                    "quantidade",
+                    "number"
+                );
+
+                html += criarSelecao(
+                    "Tamanho",
+                    "tamanho",
+                    [
+                        "Pequeno",
+                        "Médio",
+                        "Grande"
+                    ]
+                );
+            }
+
+            /* OUTRAS CATEGORIAS */
+            else {
+
+                html += criarCampo(
+                    "Quantidade",
+                    "quantidade",
+                    "number"
+                );
+            }
+
+            /* OBSERVAÇÕES */
+            html += `
+                <div class="campo-pedido">
+
+                    <label for="observacoes">
+                        Observações adicionais
+                    </label>
+
+                    <textarea
+                        id="observacoes"
+                        name="observacoes"
+                        placeholder="Informe detalhes do seu pedido..."
+                    ></textarea>
+
+                </div>
+            `;
+
+            campos.innerHTML = html;
+
+            // INICIAR SELEÇÃO DE SABORES DOS POTES
+            if (categoria === "Bolos de Pote") {
+                montarSaboresPote();
+            }
+
+            modal.hidden = false;
+
+            document.body.style.overflow = "hidden";
+        }
+
+        /* =====================================
+           FECHAR PERSONALIZAÇÃO
+        ===================================== */
+
+        function fecharPersonalizacao() {
+
+            document.getElementById(
+                "modal-personalizacao"
+            ).hidden = true;
+
+            document.body.style.overflow = "";
+
+            iniciarCarrossel();
+        }
+
+        /* =====================================
+           ENVIAR PEDIDO PELO WHATSAPP
+        ===================================== */
+
+        document.getElementById(
+            "form-personalizacao"
+        ).addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            const formulario = new FormData(this);
+
+            /* VALIDAR BOLOS DE POTE */
+            if (categoriaAtual === "Bolos de Pote") {
+
+                const desejado = Number(
+                    formulario.get("quantidade")
+                );
+
+                const selecionado = totalSaboresPote();
+
+                if (
+                    !Number.isInteger(desejado) ||
+                    desejado < 1 ||
+                    selecionado !== desejado
+                ) {
+
+                    alert(
+                        "Distribua todas as unidades entre os sabores. " +
+                        "A soma precisa ser igual à quantidade total."
+                    );
+
+                    return;
+                }
+            }
+
+            /* VALIDAR DOCINHOS */
+            if (categoriaAtual === "Docinhos") {
+
+                const quantidade = Number(
+                    formulario.get("quantidade")
+                );
+
+                if (
+                    quantidade < 100 ||
+                    quantidade % 100 !== 0
+                ) {
+
+                    alert(
+                        "Escolha uma quantidade de 100, 200, 300 " +
+                        "ou mais, sempre de 100 em 100."
+                    );
+
+                    return;
+                }
+
+                const sabores = formulario.getAll(
+                    "sabores_docinhos"
+                );
+
+                if (sabores.length === 0) {
+
+                    alert(
+                        "Escolha pelo menos um sabor."
+                    );
+
+                    return;
+                }
+
+                const limiteSabores =
+                    quantidade > 100 ? 6 : 4;
+
+                if (sabores.length > limiteSabores) {
+
+                    alert(
+                        "Para essa quantidade, escolha no máximo " +
+                        limiteSabores +
+                        " sabores."
+                    );
+
+                    return;
+                }
+            }
+
+            /* MONTAR MENSAGEM */
+            let mensagem = "Olá, Doçuras Amanda!\n\n";
+
+            const tipoProduto =
+                categoriaAtual === "Bolos de Festa"
+                    ? "um bolo decorado"
+                    : categoriaAtual === "Docinhos"
+                    ? "docinhos"
+                    : categoriaAtual === "Bolos de Pote"
+                    ? "bolos de pote"
+                    : categoriaAtual === "Bolos Caseiros"
+                    ? "um bolo caseiro"
+                    : "um produto do catálogo";
+
+            mensagem +=
+                "Gostaria de solicitar um orçamento para " +
+                tipoProduto +
+                ".\n\n";
+
+            mensagem += "*Detalhes do meu pedido*\n\n";
+
+            mensagem +=
+                "*Modelo:* " +
+                produtoAtual +
+                "\n";
+
+            const nomesCampos = {
+                pessoas: "Quantidade",
+                quantidade: "Quantidade",
+                massa: "Massa",
+                recheio: "Recheio",
+                formato: "Formato",
+                topo: "Topo personalizado",
+                tema: "Tema da decoração",
+                sabor: "Sabor",
+                tamanho: "Tamanho",
+                cor_forminhas: "Cor das forminhas",
+                observacoes: "Observações"
+            };
+
+            /* DADOS DO FORMULÁRIO */
+            for (const [campo, valor] of formulario.entries()) {
+
+                if (campo === "sabores_docinhos") {
+                    continue;
+                }
+
+                if (valor && valor.trim() !== "") {
+
+                    const titulo =
+                        nomesCampos[campo] || campo;
+
+                    let valorFormatado = valor;
+
+                    if (campo === "pessoas") {
+
+                        valorFormatado =
+                            valor + " pessoas";
+                    }
+
+                    if (
+                        campo === "quantidade" &&
+                        categoriaAtual === "Docinhos"
+                    ) {
+
+                        valorFormatado =
+                            valor + " unidades";
+                    }
+
+                    mensagem +=
+                        "*" +
+                        titulo +
+                        ":* " +
+                        valorFormatado +
+                        "\n";
+                }
+            }
+
+            /* NOVO: SABORES E QUANTIDADES DOS POTES */
+            if (categoriaAtual === "Bolos de Pote") {
+
+                mensagem += "\n*Sabores e quantidades:*\n";
+
+                saboresPote.forEach((sabor, indice) => {
+
+                    const quantidade =
+                        quantidadesPote[indice] || 0;
+
+                    if (quantidade > 0) {
+
+                        mensagem +=
+                            quantidade +
+                            "x " +
+                            sabor +
+                            "\n";
+                    }
+                });
+            }
+
+            /* SABORES DOS DOCINHOS */
+            if (categoriaAtual === "Docinhos") {
+
+                const sabores = formulario.getAll(
+                    "sabores_docinhos"
+                );
+
+                mensagem +=
+                    "*Sabores escolhidos:* " +
+                    sabores.join(", ") +
+                    "\n";
+            }
+
+            mensagem +=
+                "\nPoderiam me informar o valor " +
+                "e a disponibilidade para encomenda?\n\n";
+
+            mensagem += "Muito obrigada!";
+
+            const url =
+                "https://wa.me/" +
+                telefoneWhatsApp +
+                "?text=" +
+                encodeURIComponent(mensagem);
+
+            window.open(url, "_blank");
+        });
+
+        /* =====================================
+           FECHAR AO CLICAR FORA
+        ===================================== */
+
+        document.getElementById(
+            "modal-personalizacao"
+        ).addEventListener("click", function(event) {
+
+            if (event.target === this) {
+                fecharPersonalizacao();
+            }
+        });
+
+        /* =====================================
+           FECHAR COM ESC
+        ===================================== */
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Escape") {
+
+                    const modal = document.getElementById(
+                        "modal-personalizacao"
+                    );
+
+                    if (!modal.hidden) {
+                        fecharPersonalizacao();
+                    }
+                }
+            }
+        );
+
+    </script>
 
 </body>
-
 </html>
